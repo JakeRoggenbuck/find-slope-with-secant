@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <math.h>
 
-#define H 0.00001
+#define H 0.000000001
 
 struct PointSlope {
 	double x_1;
@@ -9,6 +10,11 @@ struct PointSlope {
 	double y_2;
 	double slope;
 };
+
+double f(double x) {
+	// f(x) = 3x^2 - x^7 - 4x^3
+	return 3 * pow(x, 2) - pow(x, 7) - 4 * pow(x, 3);
+}
 
 double g(double x) {
 	// g(x) = x^2 - 2x - 2
@@ -28,12 +34,19 @@ struct PointSlope get_aroc(double x_1, double x_2, double (*func)(double)) {
 	return ps;
 }
 
-int main() {
-	double x_1 = 4.0;
-	double x_2 = x_1 + H;
-	struct PointSlope ps = get_aroc(x_1, x_2, g);
+void draw(struct PointSlope* ps) {
+	printf("slope: %lf\n", ps->slope);
+	printf("equation: y - %lf = %lf ( x - %lf)\n", ps->y_1, ps->slope, ps->x_1);
+}
 
-	printf("slope: %f\n", ps.slope);
-	printf("equation: y - %f = %f ( x - %f)\n", ps.y_1, ps.slope, ps.x_1);
+int main() {
+	double x_1 = 1.0;
+	double x_2 = x_1 + H;
+
+	struct PointSlope g_ps = get_aroc(x_1, x_2, g);
+	struct PointSlope f_ps = get_aroc(x_1, x_2, f);
+
+	draw(&g_ps);
+	draw(&f_ps);
 	return 0;
 }
